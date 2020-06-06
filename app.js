@@ -4,11 +4,15 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 // const db = require("./database/db"); // Old hacky way of dealiying with db
+// require("dotenv").config();
 const knex_options = require("./knexfile");
 const knex = require("knex")(knex_options);
 
 const swaggerUI = require("swagger-ui-express");
 const swaggerDocument = require("./docs/template.json");
+
+const helmet = require("helmet");
+const cors = require("cors");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -30,6 +34,8 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 app.use(logger("common"));
+app.use(helmet());
+app.use(cors()); // allows other web apps with different domain to access the server
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

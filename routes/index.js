@@ -92,4 +92,43 @@ router.get("/api/city/:CountryCode", function (req, res) {
     });
 });
 
+/* Update City Population post */
+router.post("/api/update", (req, res, next) => {
+  if (
+    !req.body.City ||
+    !req.body.CountryCode ||
+    (!req.body.Pop && req.body.Pop !== 0)
+  ) {
+    res.status(400).json({
+      message: "Error updating population",
+    });
+
+    console.log("Error on request body:", JSON.stringify(req.body));
+  } else {
+    const filter = {
+      Name: req.body.City,
+      CountryCode: req.body.CountryCode,
+    };
+
+    const pop = {
+      Population: req.body.Pop,
+    };
+
+    req
+      .db("city")
+      .where(filter)
+      .update(pop)
+      .then((_) => {
+        res.status(201).json({
+          message: `Successfully updated ${req.body.City}`,
+        });
+        console.log("Successful population update:", JSON.stringify(filter));
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: "Database error - not updated",
+        });
+      });
+  }
+});
 module.exports = router;
