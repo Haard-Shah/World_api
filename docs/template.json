@@ -141,6 +141,62 @@
           }
         }
       }
+    },
+    "/api/update": {
+      "post": {
+        "tags": ["update"],
+        "summary": "Update a city's population",
+        "description": "Updates a city's population given user provides the city name and country code",
+        "operationId": "updateCityPopulation",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "City",
+            "in": "query",
+            "description": "City name e.g. Shanghai",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "CountryCode",
+            "in": "query",
+            "description": "Country Code e.g. CHN",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Pop",
+            "in": "query",
+            "description": "population e.g. 128823",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful update",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Database error - not updated",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "Message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
