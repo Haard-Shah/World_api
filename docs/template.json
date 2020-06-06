@@ -1,0 +1,146 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "World API",
+    "description": "This is a simple Express aPI based on the World Cities Database. It supports basic city and province listings, along with filtering based on Country Code.",
+    "version": "1.0.0",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": { "email": "haard.shah@qut.edu.au" },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "information",
+      "description": "General API description"
+    },
+    {
+      "name": "query",
+      "description": "API queries based on city and optional country code."
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["information"],
+        "summary": "Simple information page",
+        "description": "Very basic API home page promising more information",
+        "operationId": "apiHome",
+        "produces": ["text/html"],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/api/city": {
+      "get": {
+        "tags": ["query"],
+        "summary": "List cities and provinces",
+        "description": "Full listing of cities and their provinces for the database",
+        "operationId": "ListCitiesAndDistricts",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Error": {
+                  "type": "string",
+                  "enum": ["true", "false"]
+                },
+                "Message": {
+                  "type": "string",
+                  "enum": ["Success", "Failure"]
+                },
+                "City": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/city/{CountryCode}": {
+      "get": {
+        "tags": ["query"],
+        "summary": "List cities and provinces filtered by country code",
+        "description": "Full listing of cities and their provinces for the database",
+        "operationId": "ListCitiesAndDistrictsFilteredCountryCode",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "CountryCode",
+            "in": "query",
+            "description": "3 Character Country Code to filter the cities by.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Error": {
+                  "type": "string",
+                  "enum": ["true", "false"]
+                },
+                "Message": {
+                  "type": "string",
+                  "enum": ["Success", "Failure"]
+                },
+                "City": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ID": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "CountryCode": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "population": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

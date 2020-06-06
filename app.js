@@ -7,6 +7,9 @@ var logger = require("morgan");
 const knex_options = require("./knexfile");
 const knex = require("knex")(knex_options);
 
+const swaggerUI = require("swagger-ui-express");
+const swaggerDocument = require("./docs/template.json");
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
@@ -54,6 +57,8 @@ app.use((req, res, next) => {
 // ----------- Routres ------------
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
