@@ -12,11 +12,21 @@ var usersRouter = require("./routes/users");
 
 var app = express();
 
+// Update the conosle logger to have headers in them
+logger.token("req", (req, res) => JSON.stringify(req.headers));
+logger.token("res", (req, res) => {
+  const headers = {};
+
+  res.getHeaderNames().map((h) => (headers[h] = res.getHeader(h)));
+
+  return JSON.stringify(headers);
+});
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-app.use(logger("dev"));
+app.use(logger("common"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
