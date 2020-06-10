@@ -1,15 +1,58 @@
 var express = require("express");
 const mysql = require("mysql"); // Need the mysql package
 var router = express.Router();
+const jwt = require('jsonwebtoken');
+
+const Authorised = (req, res, next) => {
+  const authorization = req.headers.authorization;
+  let token = null;
+
+  // 1. Check if token exisits 
+  if (authorization && authorization.split(' ').length === 2) {
+    token = authorization.split(' ')[1];
+  } else {
+    console.log("Unauthorised user");
+  }
+
+  // 1.1 if token exists, Check token validity
+  try {
+    const secretKey = "2aisuhdfhu9834njsdfhuihiasdf09234";
+    const decoded = jwt.verify(token, secretKey);
+
+    if (decoded.exp < Date.now()) {
+      console.log("Token has expired");
+      res.status(403).json({
+        error: true,
+        message: "Token Expired"
+      });
+      return;
+    }
+
+    // Permit user to advance to route
+    next();
+
+  } catch (e) {
+    // 1.2 if token does not exist, return error message
+    console.log("Token is not valid: ", e);
+    res.status(403).json({
+      error: true,
+      message: "You are not authorised to perform this action"
+    });
+  }
+}
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("index", { title: "The World Database API" });
+  res.render("index", {
+    title: "The World Database API"
+  });
 });
 
 /* Data page */
 router.get("/api", function (req, res, next) {
-  res.render("index", { title: "Lots of routes available" });
+  res.render("index", {
+    title: "Lots of routes available"
+  });
 });
 
 /* All Cities Page */
@@ -93,7 +136,7 @@ router.get("/api/city/:CountryCode", function (req, res) {
 });
 
 /* Update City Population post */
-router.post("/api/update", (req, res, next) => {
+router.post("/api/update", Authorised, (req, res, next) => {
   if (
     !req.body.City ||
     !req.body.CountryCode ||
